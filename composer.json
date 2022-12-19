@@ -1,0 +1,15 @@
+{
+    "name": "yurakrulik/test-assignment",
+    "autoload": {
+        "psr-4": {
+            "app\\": "./"
+        }
+    },
+    "authors": [
+        {
+            "name": "Yura Krulik",
+            "email": "yurii.krulik@gmail.com"
+        }
+    ],
+    "require": {}
+}
