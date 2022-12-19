@@ -4,7 +4,9 @@
 namespace app\models;
 
 
-class VisitorModel extends \app\core\Model
+use app\core\Model;
+
+class Visitor extends Model
 {
     protected $table = 'visitors';
 }

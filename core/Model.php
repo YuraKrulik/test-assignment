@@ -6,17 +6,13 @@ namespace app\core;
 
 use PDO;
 
+/**
+ * Class Model
+ * @package app\core
+ */
 abstract class Model
 {
     protected $table;
-
-    /**
-     * @return string
-     */
-    public function getTable()
-    {
-        return $this->table;
-    }
 
     public function getAll()
     {

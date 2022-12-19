@@ -3,7 +3,11 @@
 
 namespace app\core;
 
-
+/**
+ * Class for establishing database connection
+ * Class Database
+ * @package app\core
+ */
 class Database
 {
     static public \PDO $pdo;
