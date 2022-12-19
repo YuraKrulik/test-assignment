@@ -14,12 +14,13 @@ class Record extends Model
 
     public function getAll()
     {
-        $sql = "SELECT t.id, v.name as visitor_name, b.name as book_name, t.issue_date, t.return_date
+        $sql = "SELECT t.id, v.name as visitor_name, b.name as book_name, t.issue_date
                 FROM $this->table as t
                 JOIN visitors as v
                 ON t.visitor_id = v.id
                 JOIN books as b
-                ON t.book_id=b.id;";
+                ON t.book_id=b.id
+                WHERE t.return_date IS NULL;";
         $stmt = Database::$pdo->prepare($sql);
         $stmt->execute();
         $stmt->setFetchMode(PDO::FETCH_ASSOC);

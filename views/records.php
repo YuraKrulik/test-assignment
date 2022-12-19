@@ -1,4 +1,4 @@
-<h1>Books list</h1>
+<h1>Records list</h1>
 <table class="table">
   <thead>
   <tr>
@@ -6,7 +6,6 @@
     <th scope="col">Visitor</th>
     <th scope="col">Book</th>
     <th scope="col">Issue Date</th>
-    <th scope="col">Return Date</th>
   </tr>
   </thead>
   <tbody>
