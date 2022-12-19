@@ -4,7 +4,7 @@
 namespace app\core;
 
 
- class Controller
+abstract class Controller
 {
     /**
      * Renders view inside layout

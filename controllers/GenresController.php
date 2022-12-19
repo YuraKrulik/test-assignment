@@ -5,6 +5,7 @@ namespace app\controllers;
 
 
 use app\core\Controller;
+use app\core\Database;
 
 class GenresController extends Controller
 {
