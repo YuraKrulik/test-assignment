@@ -8,9 +8,17 @@ $router->get('/', function () {
     echo 'Home';
 });
 $router->setNamespace('app\controllers');
-$router->get('/books', 'BooksController@showBooks');
-$router->get('/visitors', 'VisitorsController@showVisitors');
-$router->get('/genres','GenresController@showGenres');
-$router->get('/records', 'RecordsController@showRecords');
+$router->get('/books', 'BooksController@show');
+$router->get('/books/add','BooksController@showForm');
+$router->post('/books/add', 'BooksController@store');
+$router->get('/visitors', 'VisitorsController@show');
+$router->get('/visitors/add', 'VisitorsController@showForm');
+$router->post('/visitors/add', 'VisitorsController@store');
+$router->get('/genres','GenresController@show');
+$router->get('/genres/add','GenresController@showForm');
+$router->post('/genres/add', 'GenresController@store');
+$router->get('/records', 'RecordsController@show');
+$router->get('/records/add','RecordsController@showForm');
+$router->post('/records/add', 'RecordsController@store');
 
 $router->run();

@@ -1,4 +1,5 @@
 <h1>Visitors List</h1>
+<a class="btn btn-success" href="/visitors/add" role="button">Add Visitor</a>
 <table class="table">
   <thead>
   <tr>

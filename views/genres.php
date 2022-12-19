@@ -1,4 +1,5 @@
 <h1>Genres List</h1>
+<a class="btn btn-success" href="/genres/add" role="button">Add Genre</a>
 <table class="table">
   <thead>
   <tr>

@@ -1,4 +1,5 @@
 <h1>Records list</h1>
+<a class="btn btn-success" href="/records/add" role="button">Add Record</a>
 <table class="table">
   <thead>
   <tr>

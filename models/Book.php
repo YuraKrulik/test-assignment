@@ -13,9 +13,9 @@ use PDO;
  */
 class Book extends Model
 {
-    protected $table = 'books';
+    protected string $table = 'books';
 
-    public function getAll()
+    public function getAll():array
     {
         $sql = "SELECT books.id, books.name, books.author, books.release_year, genres.name as genre
                 FROM $this->table

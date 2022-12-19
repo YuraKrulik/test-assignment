@@ -10,9 +10,9 @@ use PDO;
 
 class Record extends Model
 {
-    protected $table = 'records';
+    protected string $table = 'records';
 
-    public function getAll()
+    public function getAll():array
     {
         $sql = "SELECT t.id, v.name as visitor_name, b.name as book_name, t.issue_date
                 FROM $this->table as t
@@ -25,5 +25,25 @@ class Record extends Model
         $stmt->execute();
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         return $stmt->fetchAll();
+    }
+
+    /**
+     * Checks if the book in available
+     * @param int $book_id
+     * @return bool
+     */
+    public function checkIfBookAvailable(int $book_id):bool
+    {
+        $sql = "SELECT 1
+                FROM $this->table
+                WHERE return_date IS NULL AND book_id = $book_id;";
+        $stmt = Database::$pdo->prepare($sql);
+        $stmt->execute();
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $res = $stmt->fetchAll();
+        if(empty($res)) {
+            return true;
+        }
+        return false;
     }
 }

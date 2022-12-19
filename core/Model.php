@@ -12,14 +12,40 @@ use PDO;
  */
 abstract class Model
 {
-    protected $table;
+    protected string $table;
 
-    public function getAll()
+    /**
+     * Returns everything from table
+     * @return array
+     */
+    public function getAll():array
     {
         $sql = "SELECT * FROM $this->table";
         $stmt = Database::$pdo->prepare($sql);
         $stmt->execute();
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         return $stmt->fetchAll();
+    }
+
+    /**
+     * Creates new record
+     * @param array $vals - array of values for new row e.g ['col1'=>'val1', 'col2'=>'val2']
+     * @return bool
+     */
+    public function create(array $vals):bool {
+        try {
+            $questionMarks = '?';
+            for ($i = 0; $i<count($vals)-1; $i++) { //todo:remove this crutch
+                $questionMarks .= ', ?';
+            }
+            $sql = "INSERT INTO $this->table (".implode(', ', array_keys($vals)).") VALUES ($questionMarks)";
+            echo $sql;
+            $stmt= Database::$pdo->prepare($sql);
+            $stmt->execute(array_values($vals));
+            return true;
+        }
+        catch (\Exception $e) {
+            var_dump($e);
+        }
     }
 }

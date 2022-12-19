@@ -1,4 +1,5 @@
 <h1>Books list</h1>
+<a class="btn btn-success" href="/books/add" role="button">Add Book</a>
 <table class="table">
   <thead>
   <tr>
@@ -13,7 +14,7 @@
   <?php foreach($data as $arr): ?>
     <tr>
         <?php foreach($arr as $key=>$value): ?>
-          <th scope="row"><?php echo $value ?></th>
+          <th scope="row"><?php echo $value; ?></th>
         <?php endforeach; ?>
     </tr>
   <?php endforeach; ?>
