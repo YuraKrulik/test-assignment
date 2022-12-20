@@ -27,6 +27,15 @@ abstract class Model
         return $stmt->fetchAll();
     }
 
+    public function get(array $values):array
+    {
+        $sql = "SELECT ".implode(", ", $values)." FROM $this->table";
+        $stmt = Database::$pdo->prepare($sql);
+        $stmt->execute();
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll();
+    }
+
     /**
      * Creates new record
      * @param array $vals - array of values for new row e.g ['col1'=>'val1', 'col2'=>'val2']
@@ -39,7 +48,6 @@ abstract class Model
                 $questionMarks .= ', ?';
             }
             $sql = "INSERT INTO $this->table (".implode(', ', array_keys($vals)).") VALUES ($questionMarks)";
-            echo $sql;
             $stmt= Database::$pdo->prepare($sql);
             $stmt->execute(array_values($vals));
             return true;

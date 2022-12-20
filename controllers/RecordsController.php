@@ -25,8 +25,8 @@ class RecordsController extends Controller
      */
     public function showForm()
     {
-        $data['visitors'] = (new Visitor)->getAll();
-        $data['books'] = (new Book)->getAll();
+        $data['visitors'] = (new Visitor)->get(['id', 'name']);
+        $data['books'] = (new Book)->get(['id', 'name']);
         $this->render('main', 'records_add', $data);
     }
 

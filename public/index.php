@@ -5,7 +5,9 @@ $dotenv = Dotenv\Dotenv::createImmutable(__DIR__.'../../');
 $dotenv->load();
 $database = new \app\core\Database($_ENV['DB_DSN'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
 $router->get('/', function () {
-    echo 'Home';
+
+    header("Location: ".$_ENV['APP_URL']."./visitors");
+    die();
 });
 $router->setNamespace('app\controllers');
 $router->get('/books', 'BooksController@show');

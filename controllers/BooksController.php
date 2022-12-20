@@ -26,7 +26,7 @@ class BooksController extends Controller
     public function showForm()
     {
         $genres_model = new Genre();
-        $genres = $genres_model->getAll();
+        $genres = $genres_model->get(['id', 'name']);
         $this->render('main', 'books_add', $genres);
     }
 
