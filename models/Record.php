@@ -44,6 +44,17 @@ class Record extends Model
         if(empty($res)) {
             return true;
         }
+        $this->addError('book', "book is unavailable");
         return false;
+    }
+
+    public function validate(array $data, bool $is_update = false):bool
+    {
+        return $this->checkIfBookAvailable($data['book_id']);
+    }
+
+    protected function rules(): array
+    {
+        // TODO: Implement rules() method.
     }
 }

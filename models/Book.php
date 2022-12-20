@@ -25,4 +25,14 @@ class Book extends Model
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         return $stmt->fetchAll();
     }
+
+    protected function rules(): array
+    {
+        return [
+            'name' => ['required'],
+            'author' => ['required'],
+            'release_year' => ['required', 'max:4'],
+            'genre_id' => ['required'],
+        ];
+    }
 }

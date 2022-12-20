@@ -37,14 +37,21 @@ class RecordsController extends Controller
     {
         $data = $_POST;
         $data['issue_date'] = date('Y-m-d');
-        if ($this->validate($data)) {
-            if ((new Record)->create($data)) {
+        $record_model = new Record();
+        if ($record_model->validate($data)) {
+            if ($record_model->create($data)) {
                 header("Location: " . $_ENV['APP_URL'] . "./records");
                 die();
             }
-            header("Location: " . $_ENV['APP_URL'] . "./records/add");
+            $_SESSION['errors']['unknown'] = ['unknown' => 'error when creating row'];
+            header("Location: ".$_ENV['APP_URL']."./records/add");
+            die();
         }
-        header("Location: " . $_ENV['APP_URL'] . "./records/add");
+        else {
+            $_SESSION['errors'] = $record_model->getErrors();
+            header("Location: ".$_ENV['APP_URL']."./records/add");
+            die();
+        }
     }
 
     /**

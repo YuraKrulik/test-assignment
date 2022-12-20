@@ -13,6 +13,25 @@ use PDO;
 abstract class Model
 {
     protected string $table;
+    protected array $errors = [];
+
+    /**
+     * Getter for errors
+     * @return array
+     */
+    public function getErrors(): array
+    {
+        return $this->errors;
+    }
+
+    /**
+     * @param string $key - key for error
+     * @param string $message -error message
+     */
+    public function addError(string $key, string $message)
+    {
+        $this->errors[$key][] = $message;
+    }
 
     /**
      * Returns everything from table
@@ -106,5 +125,87 @@ abstract class Model
             var_dump($e);
             return false;
         }
+    }
+
+    protected function checkIfExists(string $column_name, $value): bool
+    {
+        $sql = "SELECT 1
+                FROM $this->table
+                WHERE $column_name = \"$value\";";
+        var_dump($sql);
+        $stmt = Database::$pdo->prepare($sql);
+        $stmt->execute();
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $res = $stmt->fetchAll();
+        if(empty($res)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param string $value -email value
+     * @param int $id - row id to exclude from search
+     * @return bool
+     */
+    protected function checkIfEmailExistsUpdate(string $value, int $id): bool
+    {
+        $sql = "SELECT 1
+                FROM $this->table
+                WHERE email = \"$value\" AND id <> $id";
+        var_dump($sql);
+        $stmt = Database::$pdo->prepare($sql);
+        $stmt->execute();
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $res = $stmt->fetchAll();
+        if(empty($res)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @return array - should return array of validation rules for example [
+     *   'col1' => ['required'],
+     *   'col2' => ['required', 'email'],
+     *   'col3' => ['max:8'],
+     *   ]
+     */
+    protected abstract function rules():array;
+
+    /**
+     * Validates given data
+     * @param array $data - data to validate according to rules()
+     * @param bool $is_update -specifies if updating for email validation
+     * @return bool
+     */
+    public function validate(array $data, bool $is_update = false) {
+        foreach ($this->rules() as $key=>$rules) {
+            foreach ($rules as $rule) {
+                if ($rule === 'required' && empty($data[$key]))
+                    $this->addError($key, "$key is required");
+                if ($rule === 'email') {
+                    if (!filter_var($data[$key], FILTER_VALIDATE_EMAIL)) {
+                        $this->addError($key, "$key field should be a valid email");
+                        continue;
+                    }
+                    elseif ($is_update ? !$this->checkIfEmailExistsUpdate($data[$key], $data['id']) : !$this->checkIfExists($key, $data[$key])) {
+                        $this->addError($key, "$key already exists");
+                    }
+                }
+                if (str_contains($rule, "max:")) {
+                    $parts = explode(':',$rule);
+                    if (strlen($data[$key]) > $parts[1])
+                        $this->addError($key, "$key maximum length is $parts[1] characters");
+                }
+                if ($rule === 'unique') {
+                    if (!$this->checkIfExists($key, $data[$key]))
+                        $this->addError($key, "$key already exists");
+                }
+            }
+        }
+        if (empty($this->getErrors()))
+            return true;
+        return false;
     }
 }

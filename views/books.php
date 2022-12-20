@@ -8,6 +8,7 @@
     <th scope="col">Author</th>
     <th scope="col">Release Year</th>
     <th scope="col">Genre</th>
+    <th scope="col">Action</th>
   </tr>
   </thead>
   <tbody>

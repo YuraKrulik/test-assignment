@@ -25,13 +25,13 @@ class GenresController extends Controller
      */
     public function showForm()
     {
-        $this->render('main', 'genres_add');
+        $this->render('main', 'genres_add_edit');
     }
 
     public function showEditForm(int $id)
     {
         $data = (new Genre())->getById($id);
-        $this->render('main', 'genres_add', $data);
+        $this->render('main', 'genres_add_edit', $data);
     }
 
     /**
@@ -39,11 +39,21 @@ class GenresController extends Controller
      */
     public function store()
     {
-        if((new Genre)->create($_POST)) {
-            header("Location: ".$_ENV['APP_URL']."./genres");
+        $genre_model = new Genre();
+        if ($genre_model->validate($_POST)) {
+            if($genre_model->create($_POST)) {
+                header("Location: ".$_ENV['APP_URL']."./genres");
+                die();
+            }
+            $_SESSION['errors']['unknown'] = ['unknown' => 'error when creating row'];
+            header("Location: ".$_ENV['APP_URL']."./genres/add");
             die();
         }
-        header("Location: ".$_ENV['APP_URL']."./genres/add");
+        else {
+            $_SESSION['errors'] = $genre_model->getErrors();
+            header("Location: ".$_ENV['APP_URL']."./genres/add");
+            die();
+        }
     }
 
     /**
@@ -52,10 +62,19 @@ class GenresController extends Controller
      */
     public function update($id)
     {
-        if((new Genre)->update($id, $_POST)) {
-            header("Location: ".$_ENV['APP_URL']."./genres");
+        $genre_model = new Genre();
+        if ($genre_model->validate($_POST)) {
+            if ($genre_model->update($id, $_POST)) {
+                header("Location: " . $_ENV['APP_URL'] . "./genres");
+                die();
+            }
+            $_SESSION['errors']['unknown'] = ['unknown' => 'error when creating row'];
+            header("Location: " . $_ENV['APP_URL'] . "./genres/edit/$id");
+            die();
+        } else {
+            $_SESSION['errors'] = $genre_model->getErrors();
+            header("Location: " . $_ENV['APP_URL'] . "./genres/edit/$id");
             die();
         }
-        header("Location: ".$_ENV['APP_URL']."./genres/edit/$id");
     }
 }

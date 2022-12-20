@@ -26,7 +26,7 @@ class BooksController extends Controller
     public function showForm()
     {
         $data['genres'] = (new Genre)->get(['id', 'name']);
-        $this->render('main', 'books_add', $data);
+        $this->render('main', 'books_add_edit', $data);
     }
 
 
@@ -34,7 +34,7 @@ class BooksController extends Controller
     {
         $data['book'] = (new Book())->getById($id);
         $data['genres'] = (new Genre)->get(['id', 'name']);
-        $this->render('main', 'books_add', $data);
+        $this->render('main', 'books_add_edit', $data);
     }
 
     /**
@@ -42,11 +42,20 @@ class BooksController extends Controller
      */
     public function store()
     {
-        if((new Book)->create($_POST)) {
-            header("Location: ".$_ENV['APP_URL']."./books");
+        $book_model = new Book();
+        if ($book_model->validate($_POST)) {
+            if ($book_model->create($_POST)) {
+                header("Location: " . $_ENV['APP_URL'] . "./books");
+                die();
+            }
+            $_SESSION['errors']['unknown'] = ['unknown' => 'error when creating row'];
+            header("Location: " . $_ENV['APP_URL'] . "./books/add");
+            die();
+        } else {
+            $_SESSION['errors'] = $book_model->getErrors();
+            header("Location: " . $_ENV['APP_URL'] . "./books/add");
             die();
         }
-        header("Location: ".$_ENV['APP_URL']."./books/add");
     }
 
     /**
@@ -55,10 +64,19 @@ class BooksController extends Controller
      */
     public function update($id)
     {
-        if((new Book())->update($id, $_POST)) {
-            header("Location: ".$_ENV['APP_URL']."./books");
+        $book_model = new Book();
+        if ($book_model->validate($_POST)) {
+            if ($book_model->update($id, $_POST)) {
+                header("Location: " . $_ENV['APP_URL'] . "./books");
+                die();
+            }
+            $_SESSION['errors']['unknown'] = ['unknown' => 'error when creating row'];
+            header("Location: " . $_ENV['APP_URL'] . "./books/add");
+            die();
+        } else {
+            $_SESSION['errors'] = $book_model->getErrors();
+            header("Location: " . $_ENV['APP_URL'] . "./books/edit/$id");
             die();
         }
-        header("Location: ".$_ENV['APP_URL']."./books/edit/$id");
     }
 }

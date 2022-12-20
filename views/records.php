@@ -7,6 +7,7 @@
     <th scope="col">Visitor</th>
     <th scope="col">Book</th>
     <th scope="col">Issue Date</th>
+    <th scope="col">Action</th>
   </tr>
   </thead>
   <tbody>
