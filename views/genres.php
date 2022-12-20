@@ -13,6 +13,9 @@
         <?php foreach($arr as $key=>$value): ?>
           <th scope="row"><?php echo $value ?></th>
         <?php endforeach; ?>
+      <th>
+        <a class="btn btn-warning" href="/genres/edit/<?php echo $arr['id'] ?>" role="button">edit</a>
+      </th>
     </tr>
   <?php endforeach; ?>
   </tbody>

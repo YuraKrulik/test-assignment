@@ -12,9 +12,14 @@
   <tbody>
   <?php foreach($data as $arr): ?>
     <tr>
-        <?php foreach($arr as $key=>$value): ?>
-          <th scope="row"><?php echo $value ?></th>
-        <?php endforeach; ?>
+      <?php foreach($arr as $key=>$value): ?>
+        <th scope="row"><?php echo $value ?></th>
+      <?php endforeach; ?>
+      <th>
+        <form action="/records/edit/<?php echo $arr['id'] ?>" method="POST">
+          <a class="btn btn-warning" onclick="this.parentNode.submit()" href="#" role="button">Return Book</a>
+        </form>
+      </th>
     </tr>
   <?php endforeach; ?>
   </tbody>

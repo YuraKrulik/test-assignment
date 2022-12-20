@@ -28,6 +28,12 @@ class GenresController extends Controller
         $this->render('main', 'genres_add');
     }
 
+    public function showEditForm(int $id)
+    {
+        $data = (new Genre())->getById($id);
+        $this->render('main', 'genres_add', $data);
+    }
+
     /**
      * Creates new genre
      */
@@ -38,5 +44,18 @@ class GenresController extends Controller
             die();
         }
         header("Location: ".$_ENV['APP_URL']."./genres/add");
+    }
+
+    /**
+     * Updates genre
+     * @param $id
+     */
+    public function update($id)
+    {
+        if((new Genre)->update($id, $_POST)) {
+            header("Location: ".$_ENV['APP_URL']."./genres");
+            die();
+        }
+        header("Location: ".$_ENV['APP_URL']."./genres/edit/$id");
     }
 }

@@ -28,6 +28,12 @@ class VisitorsController extends Controller
         $this->render('main', 'visitors_add');
     }
 
+    public function showEditForm(int $id)
+    {
+        $data = (new Visitor)->getById($id);
+        $this->render('main', 'visitors_add', $data);
+    }
+
     /**
      * Creates new visitor
      */
@@ -38,5 +44,18 @@ class VisitorsController extends Controller
             die();
         }
         header("Location: ".$_ENV['APP_URL']."./visitors/add");
+    }
+
+    /**
+     * Updates visitor
+     * @param $id
+     */
+    public function update($id)
+    {
+        if((new Visitor)->update($id, $_POST)) {
+            header("Location: ".$_ENV['APP_URL']."./visitors");
+            die();
+        }
+        header("Location: ".$_ENV['APP_URL']."./visitors/edit/$id");
     }
 }

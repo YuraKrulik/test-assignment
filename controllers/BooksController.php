@@ -25,9 +25,16 @@ class BooksController extends Controller
      */
     public function showForm()
     {
-        $genres_model = new Genre();
-        $genres = $genres_model->get(['id', 'name']);
-        $this->render('main', 'books_add', $genres);
+        $data['genres'] = (new Genre)->get(['id', 'name']);
+        $this->render('main', 'books_add', $data);
+    }
+
+
+    public function showEditForm(int $id)
+    {
+        $data['book'] = (new Book())->getById($id);
+        $data['genres'] = (new Genre)->get(['id', 'name']);
+        $this->render('main', 'books_add', $data);
     }
 
     /**
@@ -40,5 +47,18 @@ class BooksController extends Controller
             die();
         }
         header("Location: ".$_ENV['APP_URL']."./books/add");
+    }
+
+    /**
+     * Updates book
+     * @param $id
+     */
+    public function update($id)
+    {
+        if((new Book())->update($id, $_POST)) {
+            header("Location: ".$_ENV['APP_URL']."./books");
+            die();
+        }
+        header("Location: ".$_ENV['APP_URL']."./books/edit/$id");
     }
 }

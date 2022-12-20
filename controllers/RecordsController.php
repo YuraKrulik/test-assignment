@@ -47,6 +47,20 @@ class RecordsController extends Controller
         header("Location: " . $_ENV['APP_URL'] . "./records/add");
     }
 
+    /**
+     * Updates record
+     * @param $id
+     */
+    public function update($id)
+    {
+        $data['return_date'] = date("Y-m-d H:i:s");
+        if((new Record)->update($id, $data)) {
+            header("Location: ".$_ENV['APP_URL']."./records");
+            die();
+        }
+        header("Location: ".$_ENV['APP_URL']."./records/edit/$id");
+    }
+
     protected function validate($data)
     {
         return (new Record)->checkIfBookAvailable($data['book_id']);
