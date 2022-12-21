@@ -14,7 +14,7 @@ class Genre extends Model
     protected function rules(): array
     {
         return [
-          'name' => ['required']
+          'name' => ['required', 'unique']
         ];
     }
 }

@@ -3,7 +3,10 @@
 
 namespace app\core;
 
-
+/**
+ * Class Controller
+ * @package app\core
+ */
 abstract class Controller
 {
     /**

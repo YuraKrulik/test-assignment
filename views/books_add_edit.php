@@ -36,11 +36,17 @@
         ?>
     </div>
 
-  <label for="genre_id" class="form-label">Genre</label>
-  <select name="genre_id" class="form-select mb-3" aria-label="Default select example" id="genre_id">
+    <label for="genre_id" class="form-label">Genre</label>
+    <select name="genre_id" class="form-select mb-3" aria-label="Default select example" id="genre_id">
         <?php foreach($data['genres'] as $genre): ?>
-          <option <?php echo isset($data['book']) && $genre['id'] === $data['book']['genre_id'] ? 'selected':'' ?> value="<?php echo $genre['id']?>"><?php echo $genre['name']?></option>
+            <option <?php echo isset($data['book']) && $genre['id'] === $data['book']['genre_id'] ? 'selected':'' ?> value="<?php echo $genre['id']?>"><?php echo $genre['name']?></option>
         <?php endforeach; ?>
     </select>
-    <button type="submit" class="btn btn-primary">Submit</button>
+        <?php
+        if (isset($_SESSION['errors']['genre_id'])) {
+            $errors = $_SESSION['errors']['genre_id'];
+            include 'validation_error.php';
+        }
+        ?>
+      <button type="submit" class="btn btn-primary">Submit</button>
 </form>

@@ -28,6 +28,10 @@ class VisitorsController extends Controller
         $this->render('main', 'visitors_add_edit');
     }
 
+    /**
+     * Shows form for editing
+     * @param int $id - id of row being edited
+     */
     public function showEditForm(int $id)
     {
         $data = (new Visitor)->getById($id);
@@ -42,17 +46,13 @@ class VisitorsController extends Controller
         $visitor_model = new Visitor();
         if ($visitor_model->validate($_POST)) {
             if($visitor_model->create($_POST)) {
-                header("Location: ".$_ENV['APP_URL']."./visitors");
+                header("Location: ".$_ENV['APP_URL']."/visitors");
                 die();
             }
-            $_SESSION['errors']['unknown'] = ['unknown' => 'error when creating row'];
-            header("Location: ".$_ENV['APP_URL']."./visitors/add");
-            die();
+            Error::setSessionErrors(array('unknown' => ['unknown' => 'error when updating row']), "/visitors/add");
         }
         else {
-            $_SESSION['errors'] = $visitor_model->getErrors();
-            header("Location: ".$_ENV['APP_URL']."./visitors/add");
-            die();
+            Error::setSessionErrors($visitor_model->getErrors(), "/visitors/add");
         }
     }
 
@@ -67,16 +67,12 @@ class VisitorsController extends Controller
         $data['id'] = $id;
         if ($visitor_model->validate($data, true)) {
             if($visitor_model->update($id, $_POST)) {
-                header("Location: ".$_ENV['APP_URL']."./visitors");
+                header("Location: ".$_ENV['APP_URL']."/visitors");
                 die();
             }
-            $_SESSION['errors']['unknown'] = ['unknown' => 'error when updating row'];
-            header("Location: " . $_ENV['APP_URL'] . "./visitors/edit/$id");
-            die();
+            Error::setSessionErrors(array('unknown' => ['unknown' => 'error when updating row']), "/visitors/edit/$id");
         } else {
-            $_SESSION['errors'] = $visitor_model->getErrors();
-            header("Location: " . $_ENV['APP_URL'] . "./visitors/edit/$id");
-            die();
+            Error::setSessionErrors($visitor_model->getErrors(), "/visitors/edit/$id");
         }
     }
 }

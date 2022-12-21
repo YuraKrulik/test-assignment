@@ -40,17 +40,13 @@ class RecordsController extends Controller
         $record_model = new Record();
         if ($record_model->validate($data)) {
             if ($record_model->create($data)) {
-                header("Location: " . $_ENV['APP_URL'] . "./records");
+                header("Location: " . $_ENV['APP_URL'] . "/records");
                 die();
             }
-            $_SESSION['errors']['unknown'] = ['unknown' => 'error when creating row'];
-            header("Location: ".$_ENV['APP_URL']."./records/add");
-            die();
+            Error::setSessionErrors(array('unknown' => ['unknown' => 'error when creating row']), "/records/add");
         }
         else {
-            $_SESSION['errors'] = $record_model->getErrors();
-            header("Location: ".$_ENV['APP_URL']."./records/add");
-            die();
+            Error::setSessionErrors($record_model->getErrors(), "/records/add");
         }
     }
 
@@ -62,10 +58,10 @@ class RecordsController extends Controller
     {
         $data['return_date'] = date("Y-m-d H:i:s");
         if((new Record)->update($id, $data)) {
-            header("Location: ".$_ENV['APP_URL']."./records");
+            header("Location: ".$_ENV['APP_URL']."/records");
             die();
         }
-        header("Location: ".$_ENV['APP_URL']."./records/edit/$id");
+        header("Location: ".$_ENV['APP_URL']."/records/edit/$id");
     }
 
     protected function validate($data)

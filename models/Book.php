@@ -14,7 +14,11 @@ use PDO;
 class Book extends Model
 {
     protected string $table = 'books';
-
+    
+    /**
+     * Returns everything from table and names from connected tables
+     * @return array
+     */
     public function getAll():array
     {
         $sql = "SELECT books.id, books.name, books.author, books.release_year, genres.name as genre

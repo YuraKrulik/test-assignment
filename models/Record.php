@@ -12,6 +12,10 @@ class Record extends Model
 {
     protected string $table = 'records';
 
+    /**
+     * Returns everything from table and names from connected tables
+     * @return array
+     */
     public function getAll():array
     {
         $sql = "SELECT t.id, v.name as visitor_name, b.name as book_name, t.issue_date
@@ -50,11 +54,17 @@ class Record extends Model
 
     public function validate(array $data, bool $is_update = false):bool
     {
-        return $this->checkIfBookAvailable($data['book_id']);
+        if(parent::validate($data)){
+            return $this->checkIfBookAvailable($data['book_id']);
+        }
+        return false;
     }
 
     protected function rules(): array
     {
-        // TODO: Implement rules() method.
+        return [
+            'visitor_id' => ['required'],
+            'book_id' => ['required']
+        ];
     }
 }

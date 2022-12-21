@@ -84,14 +84,12 @@ abstract class Model
     public function create(array $vals):bool
     {
         try {
-            $questionMarks = '?';
-            for ($i = 0; $i<count($vals)-1; $i++) { //todo:remove this crutch
-                $questionMarks .= ', ?';
-            }
-            $sql = "INSERT INTO $this->table (".implode(', ', array_keys($vals)).") VALUES ($questionMarks)";
+            $keys = implode(', ', array_keys($vals));
+            $values = implode("', '", array_values($vals));
+            $sql = "INSERT INTO $this->table ($keys) VALUES ('$values')";
+            var_dump($sql);
             $stmt= Database::$pdo->prepare($sql);
-            $stmt->execute(array_values($vals));
-            return true;
+            return $stmt->execute();
         }
         catch (\Exception $e) {
             var_dump($e);
@@ -118,8 +116,7 @@ abstract class Model
                     WHERE id = $id;";
             var_dump($sql);
             $stmt= Database::$pdo->prepare($sql);
-            $stmt->execute();
-            return true;
+            return $stmt->execute();
         }
         catch (\Exception $e) {
             var_dump($e);
@@ -127,41 +124,41 @@ abstract class Model
         }
     }
 
-    protected function checkIfExists(string $column_name, $value): bool
+    public function checkIfExists(string $column_name, $value): bool
     {
         $sql = "SELECT 1
                 FROM $this->table
                 WHERE $column_name = \"$value\";";
-        var_dump($sql);
         $stmt = Database::$pdo->prepare($sql);
         $stmt->execute();
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $res = $stmt->fetchAll();
         if(empty($res)) {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     /**
-     * @param string $value -email value
+     * @param string $column_name - checks this column for matches
+     * @param string $value
      * @param int $id - row id to exclude from search
      * @return bool
      */
-    protected function checkIfEmailExistsUpdate(string $value, int $id): bool
+    protected function checkIfExistsUpdate(string $column_name, string $value, int $id): bool
     {
         $sql = "SELECT 1
                 FROM $this->table
-                WHERE email = \"$value\" AND id <> $id";
+                WHERE $column_name = \"$value\" AND id <> $id";
         var_dump($sql);
         $stmt = Database::$pdo->prepare($sql);
         $stmt->execute();
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $res = $stmt->fetchAll();
         if(empty($res)) {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     /**
@@ -176,7 +173,7 @@ abstract class Model
     /**
      * Validates given data
      * @param array $data - data to validate according to rules()
-     * @param bool $is_update -specifies if updating for email validation
+     * @param bool $is_update -specifies if updating for unique validation
      * @return bool
      */
     public function validate(array $data, bool $is_update = false) {
@@ -189,7 +186,7 @@ abstract class Model
                         $this->addError($key, "$key field should be a valid email");
                         continue;
                     }
-                    elseif ($is_update ? !$this->checkIfEmailExistsUpdate($data[$key], $data['id']) : !$this->checkIfExists($key, $data[$key])) {
+                    elseif ($is_update ? $this->checkIfExistsUpdate($key, $data[$key], $data['id']) : $this->checkIfExists($key, $data[$key])) {
                         $this->addError($key, "$key already exists");
                     }
                 }
@@ -199,7 +196,7 @@ abstract class Model
                         $this->addError($key, "$key maximum length is $parts[1] characters");
                 }
                 if ($rule === 'unique') {
-                    if (!$this->checkIfExists($key, $data[$key]))
+                    if ($is_update ? $this->checkIfExistsUpdate($key, $data[$key], $data['id']) : $this->checkIfExists($key, $data[$key]))
                         $this->addError($key, "$key already exists");
                 }
             }

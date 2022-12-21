@@ -29,7 +29,10 @@ class BooksController extends Controller
         $this->render('main', 'books_add_edit', $data);
     }
 
-
+    /**
+     * Shows form for editing
+     * @param int $id - id of row being edited
+     */
     public function showEditForm(int $id)
     {
         $data['book'] = (new Book())->getById($id);
@@ -45,16 +48,12 @@ class BooksController extends Controller
         $book_model = new Book();
         if ($book_model->validate($_POST)) {
             if ($book_model->create($_POST)) {
-                header("Location: " . $_ENV['APP_URL'] . "./books");
+                header("Location: " . $_ENV['APP_URL'] . "/books");
                 die();
             }
-            $_SESSION['errors']['unknown'] = ['unknown' => 'error when creating row'];
-            header("Location: " . $_ENV['APP_URL'] . "./books/add");
-            die();
+            Error::setSessionErrors(array('unknown' => ['unknown' => 'error when creating row']), "/books/add");
         } else {
-            $_SESSION['errors'] = $book_model->getErrors();
-            header("Location: " . $_ENV['APP_URL'] . "./books/add");
-            die();
+            Error::setSessionErrors($book_model->getErrors(), "/books/add");
         }
     }
 
@@ -67,16 +66,12 @@ class BooksController extends Controller
         $book_model = new Book();
         if ($book_model->validate($_POST)) {
             if ($book_model->update($id, $_POST)) {
-                header("Location: " . $_ENV['APP_URL'] . "./books");
+                header("Location: " . $_ENV['APP_URL'] . "/books");
                 die();
             }
-            $_SESSION['errors']['unknown'] = ['unknown' => 'error when creating row'];
-            header("Location: " . $_ENV['APP_URL'] . "./books/add");
-            die();
+            Error::setSessionErrors(array('unknown' => ['unknown' => 'error when updating row']), "/books/edit/$id");
         } else {
-            $_SESSION['errors'] = $book_model->getErrors();
-            header("Location: " . $_ENV['APP_URL'] . "./books/edit/$id");
-            die();
+            Error::setSessionErrors($book_model->getErrors(), "/books/edit/$id");
         }
     }
 }
